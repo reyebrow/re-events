@@ -1,5 +1,6 @@
 <?php
 
+
 add_action('admin_init', 'tf_functions_css');
 
 function tf_functions_css() {
@@ -12,21 +13,21 @@ add_action( 'init', 'create_event_postype' );
 function create_event_postype() {
   
   $labels = array(
-      'name' => _x('Events', 'post type general name'),
-      'singular_name' => _x('Event', 'post type singular name'),
+      'name' => _x('Concerts', 'post type general name'),
+      'singular_name' => _x('Concert', 'post type singular name'),
       'add_new' => _x('Add New', 'events'),
-      'add_new_item' => __('Add New Event'),
-      'edit_item' => __('Edit Event'),
-      'new_item' => __('New Event'),
-      'view_item' => __('View Event'),
-      'search_items' => __('Search Events'),
-      'not_found' =>  __('No events found'),
-      'not_found_in_trash' => __('No events found in Trash'),
+      'add_new_item' => __('Add New Concert'),
+      'edit_item' => __('Edit Concert'),
+      'new_item' => __('New Concert'),
+      'view_item' => __('View Concert'),
+      'search_items' => __('Search Concert'),
+      'not_found' =>  __('No Concerts found'),
+      'not_found_in_trash' => __('No Concerts found in Trash'),
       'parent_item_colon' => '',
   );
   
   $args = array(
-      'label' => __('Events'),
+      'label' => __('Concert'),
       'labels' => $labels,
       'public' => true,
       'can_export' => true,
@@ -36,10 +37,9 @@ function create_event_postype() {
       'capability_type' => 'post',
       'menu_icon' => plugins_url('cal.png', __FILE__),
       'hierarchical' => false,
-      'rewrite' => array( "slug" => "events" ),
+      'rewrite' => array( "slug" => "concerts" ),
       'supports'=> array('title', 'thumbnail', 'excerpt', 'editor','custom-fields') ,
       'show_in_nav_menus' => true,
-      'taxonomies' => array( 're_regions')
   );
     
   register_post_type( 'tf_events', $args);
@@ -48,10 +48,11 @@ function create_event_postype() {
 
 
 
-add_action( 'admin_init', 'tf_events_create' );
+add_action( 'admin_init', 'vrs_metabox_create' );
 
-function tf_events_create() {
-    add_meta_box('tf_events_meta', 'Events', 'tf_events_meta', 'tf_events', 'side', 'high');
+function vrs_metabox_create() {
+    add_meta_box('tf_events_meta', 'Concert Details', 'tf_events_meta', 'tf_events', 'side', 'high');
+    add_meta_box('page-vrs-secondary-events', __('Concert Details'), 'vrs_secondary_edit_meta_box', 'tf_events', 'normal', 'high');
 }
 
 function tf_events_meta () {
@@ -61,7 +62,8 @@ function tf_events_meta () {
     global $post;
     $custom = get_post_custom($post->ID);
     $meta_sd = $custom["tf_events_startdate"][0];
-    $meta_ed = $custom["tf_events_enddate"][0];
+    $instrument = $custom["tf_instrument"][0];
+    $maplink = $custom["tf_map_link"][0];
     $meta_st = $meta_sd;
     $meta_et = $meta_ed;
     $meta_tz = !empty($custom["tf_events_tz"][0]) ? $custom["tf_events_tz"][0] : "-5.0";
@@ -96,26 +98,15 @@ function tf_events_meta () {
     ?>
     <div class="tf-meta">
         <ul>
+            <li><label>Primary Instrument</label><input name="tf_instrument" class="tfinstr" value="<?php echo $instrument; ?>" /></li>
             <li><label>Start Date</label><input name="tf_events_startdate" class="tfdate" value="<?php echo $clean_sd; ?>" /></li>
             <li><label>Start Time</label><input name="tf_events_starttime" class="tftime" value="<?php echo $clean_st; ?>" /><em>Use 24h format (7pm = 19:00)</em></li>
-            <li><label>End Date</label><input name="tf_events_enddate" class="tfdate" value="<?php echo $clean_ed; ?>" /></li>
-            <li><label>End Time</label><input name="tf_events_endtime" class="tftime" value="<?php echo $clean_et; ?>" /><em>Use 24h format (7pm = 19:00)</em></li>
-            <li>
-                <label>Time Zone</label>
-                <select name="tf_events_tz" id="tf_events_tz">
-                  <option value="-8.0" <?php print $meta_tz == "-8.0" ? $selected : "" ?>>(GMT -8:00) Pacific Time</option>
-                  <option value="-7.0" <?php print $meta_tz == "-7.0" ? $selected : "" ?>>(GMT -7:00) Mountain Time</option>
-                  <option value="-6.0" <?php print $meta_tz == "-6.0" ? $selected : "" ?>>(GMT -6:00) Central Time</option>
-                  <option value="-5.0" <?php print $meta_tz == "-5.0" ? $selected : "" ?>>(GMT -5:00) Eastern Time</option>
-                  <option value="-4.0" <?php print $meta_tz == "-4.0" ? $selected : "" ?>>(GMT -4:00) Atlantic Time</option>
-                  <option value="-3.5" <?php print $meta_tz == "-3.5" ? $selected : "" ?>>(GMT -3:30) Newfoundland</option>
-                </select>
-            </li>
         </ul>
     </div>
     <div class="tf-meta location">
         <ul>
             <li><label>Venue</label><input name="tf_events_venue" class="tfvenue" value="<?php echo $tfvenue; ?>" /></li>
+            <li><label>Venue Map Link</label><input name="tf_map_link" class="tfmaplink" value="<?php echo $maplink; ?>" /></li>
         </ul>
     </div>
     <?php
@@ -174,22 +165,20 @@ function save_tf_events(){
         $updatestartd = strtotime ( $_POST["tf_events_startdate"] . $_POST["tf_events_starttime"] );
         update_post_meta($post->ID, "tf_events_startdate", $updatestartd );
 
-    if(!isset($_POST["tf_events_enddate"])):
-        return $post;
-    endif;
-        $updateendd = strtotime ( $_POST["tf_events_enddate"] . $_POST["tf_events_endtime"]);
-        update_post_meta($post->ID, "tf_events_enddate", $updateendd );
-
-
-    if(!isset($_POST["tf_events_tz"])):
-        return $post;
-    endif;
-        update_post_meta($post->ID, "tf_events_tz", $_POST["tf_events_tz"] );
         
     if(!isset($_POST["tf_events_venue"])):
         return $post;
     endif;
         update_post_meta($post->ID, "tf_events_venue", $_POST["tf_events_venue"] );
+
+    if (isset($_POST['tf_instrument']))
+        update_post_meta($post->ID, "tf_instrument", $_POST["tf_instrument"] );
+
+    if (isset($_POST['tf_map_link']))
+        update_post_meta($post->ID, "tf_map_link", $_POST["tf_map_link"] );        
+
+	if (isset($_POST['vrs_secondary_edit']))
+		update_post_meta($_POST['post_ID'], 'vrs_secondary_edit', $_POST['vrs_secondary_edit']);
 
 }
 
@@ -252,5 +241,92 @@ function events_scripts() {
 
 add_action( 'admin_init', 'events_styles');
 add_action( 'admin_enqueue_scripts', 'events_scripts');
+
+
+
+
+
+/************************************************************************
+     Second tinymce metabox 
+*************************************************************************/
+
+function vrs_secondary_edit_meta_box(){
+	global $post;
+
+  $vrs_secondary_edit = get_post_meta($post->ID, 'vrs_secondary_edit', true);	
+  
+  the_editor($vrs_secondary_edit, $id = 'vrs_secondary_edit', $prev_id = 'vrs_secondary_edit_buttons', $media_buttons = true, $tab_index = 2);
+
+}
+
+
+// For Events we have a seasons taxonomy
+
+function create_season_taxonomy() {
+
+    $labels = array(
+        'name' => _x( 'Seasons', 'taxonomy general name' ),
+        'singular_name' => _x( 'Season', 'taxonomy singular name' ),
+        'search_items' =>  __( 'Search Seasons' ),
+        'popular_itqems' => __( 'Popular Seasons' ),
+        'all_items' => __( 'All Seasons' ),
+        'parent_item' => null,
+        'parent_item_colon' => null,
+        'edit_item' => __( 'Edit Season' ),
+        'update_item' => __( 'Update Season' ),
+        'add_new_item' => __( 'Add New Season' ),
+        'new_item_name' => __( 'New Season Name' ),
+        'separate_items_with_commas' => __( 'Separate season with commas' ),
+        'add_or_remove_items' => __( 'Add or remove season' ),
+        'choose_from_most_used' => __( 'Choose from the most used seasons' ),
+    );
+
+    register_taxonomy('tf_eventcategory','tf_events', array(
+        'label' => __('Season'),
+        'labels' => $labels,
+        'hierarchical' => true,
+        'show_ui' => true,
+        'query_var' => true,
+        'rewrite' => array( 'slug' => 'season' ),
+    ));
+    
+
+}
+add_action( 'init', 'create_season_taxonomy', 0 );
+
+//Each event can sit in a subscription package
+
+function create_package_taxonomy() {
+
+    $labels = array(
+        'name' => _x( 'Subscription Packages', 'taxonomy general name' ),
+        'singular_name' => _x( 'Subscription Package', 'taxonomy singular name' ),
+        'search_items' =>  __( 'Search Subscription Packages' ),
+        'popular_itqems' => __( 'Popular Subscription Packages' ),
+        'all_items' => __( 'All Subscription Packages' ),
+        'parent_item' => null,
+        'parent_item_colon' => null,
+        'edit_item' => __( 'Edit Subscription Package' ),
+        'update_item' => __( 'Update Subscription Package' ),
+        'add_new_item' => __( 'Add New Subscription Package' ),
+        'new_item_name' => __( 'New Subscription Package Name' ),
+        'separate_items_with_commas' => __( 'Separate Subscription Packages with commas' ),
+        'add_or_remove_items' => __( 'Add or remove Subscription Package' ),
+        'choose_from_most_used' => __( 'Choose from the most used Subscription Packages' ),
+    );
+
+    register_taxonomy('tf_subscription_package','tf_events', array(
+        'label' => __('Subscription Package'),
+        'labels' => $labels,
+        'hierarchical' => true,
+        'show_ui' => true,
+        'query_var' => true,
+        'rewrite' => array( 'slug' => 'season' ),
+    ));
+
+}
+add_action( 'init', 'create_package_taxonomy', 0 );
+
+
 
 
