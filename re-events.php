@@ -1,6 +1,6 @@
 <?php 
 /*
-Plugin Name: Raised Eyebrow Events
+Plugin Name: Raised Eyebrow VRS Concerts
 Description: Event Listings
 Version: 0.1
 License: GPL
@@ -20,13 +20,11 @@ add_action ("manage_posts_custom_column", "tf_events_custom_columns");
 function tf_events_edit_columns($columns) {
 
     $columns = array(
+        "title" => "Event",
         "cb" => "<input type=\"checkbox\" />",
         "tf_col_ev_cat" => "Category",
         "tf_col_ev_date" => "Dates",
         "tf_col_ev_times" => "Times",
-        "tf_col_ev_thumb" => "Thumbnail",
-        "title" => "Event",
-        "tf_col_ev_desc" => "Description",
         );
 
     return $columns;
