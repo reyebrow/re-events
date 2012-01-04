@@ -10,7 +10,7 @@ Author URI: http://www.raisedeyebrow.com/
 
 
 include_once('re-events-admin.php');
-
+include_once('re-events-widget.php');
 
 // 3. Show Columns
 

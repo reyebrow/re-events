@@ -37,7 +37,7 @@ function create_event_postype() {
       'capability_type' => 'post',
       'menu_icon' => plugins_url('cal.png', __FILE__),
       'hierarchical' => false,
-      'rewrite' => array( "slug" => "concerts" ),
+      'rewrite' => array( "slug" => "concert" ),
       'supports'=> array('title', 'thumbnail', 'excerpt', 'editor','custom-fields') ,
       'show_in_nav_menus' => true,
   );
