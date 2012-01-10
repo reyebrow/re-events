@@ -38,6 +38,7 @@ class Concerts_Widget extends WP_Widget {
           while ( $loop->have_posts() ) {
             
             $loop->the_post();  //set up $post variable
+            $post = $loop->post;
 
             ?>
               <div class="row">
@@ -49,8 +50,9 @@ class Concerts_Widget extends WP_Widget {
                   </a>
                 </div>
                 <div class="ten columns">
-                  <?php $start_date = get_post_meta($post->ID, 'tf_events_startdate', true);?>
-                  <?php concert_date($start_date);?> | <?php concert_time($start_date);?>| <?php print get_post_meta($post->ID, 'tf_events_venue', true); ?>
+                  <?php $start_date = get_post_meta($post->ID, 'tf_events_startdate', true);
+                  ?>
+                  <?php concert_date($start_date);?> | <?php concert_time($start_date);?> | <?php print get_post_meta($post->ID, 'tf_events_venue', true); ?>
                   <h3><a href="<?php print get_permalink( $post->ID );?>"><?php the_title(); ?>, <?php print get_post_meta($post->ID, 'tf_instrument', true); ?></a></h3>
                 </div>
               </div>
