@@ -62,7 +62,9 @@ function tf_events_meta () {
     global $post;
     $custom = get_post_custom($post->ID);
     $meta_sd = $custom["tf_events_startdate"][0];
+    $title2 = $custom["tf_title2"][0];
     $instrument = $custom["tf_instrument"][0];
+    $instrument2 = $custom["tf_instrument2"][0];
     $maplink = $custom["tf_map_link"][0];
     $meta_st = $meta_sd;
     $meta_et = $meta_ed;
@@ -98,9 +100,13 @@ function tf_events_meta () {
     ?>
     <div class="tf-meta">
         <ul>
-            <li><label>Primary Instrument</label><input name="tf_instrument" class="tfinstr" value="<?php echo $instrument; ?>" /></li>
-            <li><label>Start Date</label><input name="tf_events_startdate" class="tfdate" value="<?php echo $clean_sd; ?>" /></li>
-            <li><label>Start Time</label><input name="tf_events_starttime" class="tftime" value="<?php echo $clean_st; ?>" /><em>Use 24h format (7pm = 19:00)</em></li>
+            <li><label>Primary Performer Instrument</label></br><input name="tf_instrument" class="tfinstr" value="<?php echo $instrument; ?>" /></li>
+            <div style="border: 1px solid #ccc; background: #eee; padding: 5px;">
+            <li><label>Secondary Performer Name: <em>(Optional)</em></label></br><input name="tf_title2" class="tf_title2" value="<?php echo $title2; ?>" /></li>
+            <li><label>Secondary Performer Instrument: <em>(Optional)</em></label></br><input name="tf_instrument2" class="tfinstr2" value="<?php echo $instrument2; ?>" /></li>
+            </div>
+            <li><label>Start Date</label></br><input name="tf_events_startdate" class="tfdate" value="<?php echo $clean_sd; ?>" /></li>
+            <li><label>Start Time</label></br><input name="tf_events_starttime" class="tftime" value="<?php echo $clean_st; ?>" /></br><em>Use 24h format (7pm = 19:00)</em></li>
         </ul>
     </div>
     <div class="tf-meta location">
@@ -173,6 +179,13 @@ function save_tf_events(){
 
     if (isset($_POST['tf_instrument']))
         update_post_meta($post->ID, "tf_instrument", $_POST["tf_instrument"] );
+
+
+    if (isset($_POST['tf_title2']))
+        update_post_meta($post->ID, "tf_title2", $_POST["tf_title2"] );
+        
+    if (isset($_POST['tf_instrument']))
+        update_post_meta($post->ID, "tf_instrument2", $_POST["tf_instrument2"] );
 
     if (isset($_POST['tf_map_link']))
         update_post_meta($post->ID, "tf_map_link", $_POST["tf_map_link"] );        
