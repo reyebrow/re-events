@@ -53,7 +53,11 @@ class Concerts_Widget extends WP_Widget {
                   <?php $start_date = get_post_meta($post->ID, 'tf_events_startdate', true);
                   ?>
                   <?php concert_date($start_date);?> | <?php concert_time($start_date);?> | <?php print get_post_meta($post->ID, 'tf_events_venue', true); ?>
-                  <h3><a href="<?php print get_permalink( $post->ID );?>"><?php the_title(); ?>, <?php print get_post_meta($post->ID, 'tf_instrument', true); ?></a></h3>
+                  <h3 class="concert-title"><a href="<?php print get_permalink( $post->ID );?>"><?php the_title(); ?>, <?php print get_post_meta($post->ID, 'tf_instrument', true); ?></a></h3>
+               		<?php $title2 = get_post_meta($post->ID, 'tf_title2', true);
+              		if (isset($title2) && $title2 != "") :?>
+              		<h3 class="concert-title"><a href="<?php print get_permalink( $post->ID );?>"><?php print get_post_meta($post->ID, 'tf_title2', true); ?>, <?php print get_post_meta($post->ID, 'tf_instrument2', true); ?></a></h3>
+              		<?php endif;?>
                 </div>
               </div>
               
