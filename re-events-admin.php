@@ -126,7 +126,7 @@ add_action( 'admin_init', 'add_events_metaboxes' );
 
 
 function add_events_metaboxes() {
-    add_meta_box('wpt_events_location', 'Event Location', 'wpt_events_location', 'tf_events', 'normal', 'default');
+    //add_meta_box('wpt_events_location', 'Event Location', 'wpt_events_location', 'tf_events', 'normal', 'default');
 }
 
 function wpt_events_location() {
