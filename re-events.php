@@ -11,6 +11,22 @@ Author URI: http://www.raisedeyebrow.com/
 
 include_once('re-events-admin.php');
 
+//HELPER FUNCITONS
+
+
+//Format our dates and times a specific way
+function tf_events_date( $timestamp, $format="F j, Y" ){
+  if (isset( $timestamp ) && $timestamp != "")
+  print date( $format, $timestamp ); 
+}
+
+function tf_events_time( $timestamp, $format="g:i a" ){
+  if (isset( $timestamp ) && $timestamp != "")
+  print date( $format, $timestamp ); 
+}
+
+
+
 
 // 3. Show Columns
 
@@ -21,16 +37,14 @@ function tf_events_edit_columns($columns) {
 
     $columns = array(
         "cb" => "<input type=\"checkbox\" />",
-        "tf_col_ev_cat" => "Category",
+        "title" => "Event",
         "tf_col_ev_date" => "Dates",
         "tf_col_ev_times" => "Times",
-        "tf_col_ev_thumb" => "Thumbnail",
-        "title" => "Event",
         "tf_col_ev_desc" => "Description",
+        "tf_col_ev_cat" => "Category",
+       // "tf_col_ev_thumb" => "Thumbnail",
         );
-
     return $columns;
-
 }
 
 function tf_events_custom_columns($column) {
@@ -220,5 +234,4 @@ function tf_events_ical() {
   add_action('init','add_tf_events_ical_feed');
   
 
-
-?>
+include_once('re-events-widget.php');

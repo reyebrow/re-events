@@ -137,9 +137,9 @@ function tf_events_meta () {
     <div class="tf-meta">
         <ul>
             <li><label>Start Date</label><input name="tf_events_startdate" class="tfdate" value="<?php echo $clean_sd; ?>" /></li>
-            <li><label>Start Time</label><input name="tf_events_starttime" class="tftime" value="<?php echo $clean_st; ?>" /><em>Use 24h format (7pm = 19:00)</em></li>
+            <li><label>Start Time</label><input name="tf_events_starttime" class="tftime" value="<?php echo $clean_st; ?>" /><em>Use 12H format (7pm = 07:00pm)</em></li>
             <li><label>End Date</label><input name="tf_events_enddate" class="tfdate" value="<?php echo $clean_ed; ?>" /></li>
-            <li><label>End Time</label><input name="tf_events_endtime" class="tftime" value="<?php echo $clean_et; ?>" /><em>Use 24h format (7pm = 19:00)</em></li>
+            <li><label>End Time</label><input name="tf_events_endtime" class="tftime" value="<?php echo $clean_et; ?>" /><em>Use 12H format (7pm = 07:00pm)</em></li>
             <li>
                 <label>Time Zone</label>
                 <select name="tf_events_tz" id="tf_events_tz">
@@ -234,8 +234,6 @@ function save_tf_events(){
 }
 
 
-
-
 function wpt_save_events_meta($post_id, $post) {
  
     // verify this came from the our screen and with proper authorization,
@@ -278,7 +276,7 @@ add_action('save_post', 'wpt_save_events_meta', 1, 2); // save the custom fields
 
 function events_styles() {
     wp_enqueue_style('ui-datepicker', plugins_url('/css/ui-lightness/jquery-ui-1.8.16.custom.css', __FILE__) );
-    wp_enqueue_style('ui-timepicker', plugins_url('/css/timePicker.css', __FILE__) );
+    //wp_enqueue_style('ui-timepicker', plugins_url('/css/timePicker.css', __FILE__) );
 }
 
 function events_scripts() {
@@ -286,7 +284,7 @@ function events_scripts() {
     if( 'tf_events' != $post_type )
     return;
     wp_enqueue_script( 'js-jquery-ui-datepicker', plugins_url('/js/jquery-ui-1.8.16.datepicker.min.js', __FILE__), 'jQuery' );
-    wp_enqueue_script( 'js-jquery-ui-timepicker', plugins_url('/js/jquery.timePicker.min.js', __FILE__), 'jQuery' );
+    //wp_enqueue_script( 'js-jquery-ui-timepicker', plugins_url('/js/jquery.timePicker.min.js', __FILE__), 'jQuery' );
     wp_enqueue_script( 're-events-init', plugins_url('/js/app.js', __FILE__), 'js-jquery-ui-datepicker');
 }
 
