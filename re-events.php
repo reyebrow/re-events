@@ -54,18 +54,28 @@ function tf_events_custom_columns($column) {
                 // - show dates -
                 $startd = $custom["tf_events_startdate"][0];
                 $endd = $custom["tf_events_enddate"][0];
-                $startdate = date("F j, Y", $startd);
-                $enddate = date("F j, Y", $endd);
-                echo $startdate . '<br /><em>' . $enddate . '</em>';
+                if (isset($startd) && $startd != ""){
+                  $startdate = date("F j, Y", $startd);
+                  $enddate = date("F j, Y", $endd);
+                  echo $startdate . '<br /><em>' . $enddate . '</em>';
+                }
+                else {
+                  echo "NOT SET";
+                }
             break;
             case "tf_col_ev_times":
                 // - show times -
                 $startt = $custom["tf_events_startdate"][0];
                 $endt = $custom["tf_events_enddate"][0];
                 $time_format = get_option('time_format');
-                $starttime = date($time_format, $startt);
-                $endtime = date($time_format, $endt);
-                echo $starttime . ' - ' .$endtime;
+                if (isset($startt) && $startt != ""){
+                  $starttime = date($time_format, $startt);
+                  $endtime = date($time_format, $endt);
+                  echo $starttime . ' - ' .$endtime;
+                }
+                else {
+                  echo "NOT SET";
+                }
             break;
             case "tf_col_ev_thumb":
                 // - show thumb -

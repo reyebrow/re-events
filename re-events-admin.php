@@ -32,7 +32,6 @@ function create_event_postype() {
       'public' => true,
       'can_export' => true,
       'show_ui' => true,
-      '_builtin' => false,
       '_edit_link' => 'post.php?post=%d', // ?
       'capability_type' => 'post',
       'menu_icon' => plugins_url('cal.png', __FILE__),
@@ -40,6 +39,7 @@ function create_event_postype() {
       'rewrite' => array( "slug" => "concert" ),
       'supports'=> array('title', 'thumbnail', 'excerpt', 'editor','custom-fields') ,
       'show_in_nav_menus' => true,
+      'has_archive' => true,
   );
     
   register_post_type( 'tf_events', $args);
@@ -52,7 +52,8 @@ add_action( 'admin_init', 'vrs_metabox_create' );
 
 function vrs_metabox_create() {
     add_meta_box('tf_events_meta', 'Concert Details', 'tf_events_meta', 'tf_events', 'side', 'high');
-    add_meta_box('page-vrs-secondary-events', __('Concert Details'), 'vrs_secondary_edit_meta_box', 'tf_events', 'normal', 'high');
+    add_meta_box('tf_events_ticket', 'Ticket Link', 'tf_events_ticket', 'tf_events', 'side', 'high');
+    add_meta_box('page-vrs-secondary-events', __('Additional Information'), 'vrs_secondary_edit_meta_box', 'tf_events', 'normal', 'high');
 }
 
 function tf_events_meta () {
@@ -67,7 +68,6 @@ function tf_events_meta () {
     $instrument2 = $custom["tf_instrument2"][0];
     $maplink = $custom["tf_map_link"][0];
     $meta_st = $meta_sd;
-    $meta_et = $meta_ed;
     $meta_tz = !empty($custom["tf_events_tz"][0]) ? $custom["tf_events_tz"][0] : "-5.0";
     $selected = "selected=\"selected\"";
     
@@ -81,14 +81,12 @@ function tf_events_meta () {
 
     // - populate today if empty, 00:00 for time -
 
-    if ($meta_sd == null) { $meta_sd = time(); $meta_ed = $meta_sd; $meta_st = 0; $meta_et = 0;}
+    if ($meta_sd == null) { $meta_sd = ""; $meta_st = "";}
 
     // - convert to pretty formats -
-
-    $clean_sd = date("D, M d, Y", $meta_sd);
-    $clean_ed = date("D, M d, Y", $meta_ed);
-    $clean_st = date($time_format, $meta_st);
-    $clean_et = date($time_format, $meta_et);
+    //print "<pre style='display: none;'>".print_r(get_defined_vars(),1)."</pre>";
+    $clean_sd = isset($meta_sd) && $meta_sd != "" ? date("D, M d, Y", $meta_sd) : "";
+    $clean_st = isset($meta_st) && $meta_st != "" ? date($time_format, $meta_st) : "";
 
     // - security -
 
@@ -106,7 +104,7 @@ function tf_events_meta () {
             <li><label>Secondary Performer Instrument: <em>(Optional)</em></label></br><input name="tf_instrument2" class="tfinstr2" value="<?php echo $instrument2; ?>" /></li>
             </div>
             <li><label>Start Date</label></br><input name="tf_events_startdate" class="tfdate" value="<?php echo $clean_sd; ?>" /></li>
-            <li><label>Start Time</label></br><input name="tf_events_starttime" class="tftime" value="<?php echo $clean_st; ?>" /></br><em>Use 24h format (7pm = 19:00)</em></li>
+            <li><label>Start Time</label></br><input name="tf_events_starttime" class="tftime" value="<?php echo $clean_st; ?>" /></br><em>Use 12h format (eg. 3:30pm)</em></li>
         </ul>
     </div>
     <div class="tf-meta location">
@@ -115,6 +113,26 @@ function tf_events_meta () {
             <li><label>Venue Map Link</label><input name="tf_map_link" class="tfmaplink" value="<?php echo $maplink; ?>" /></li>
         </ul>
     </div>
+    <?php
+}
+
+
+
+function tf_events_ticket() {
+
+    global $post;
+    echo '<input type="hidden" name="tf-events-nonce" id="tf-events-nonce" value="' .
+    wp_create_nonce( 'tf-events-nonce' ) . '" />';
+
+    $custom = get_post_custom($post->ID);
+    $ticket = $custom["tf_events_ticket"][0];
+
+    ?>
+<p><label>Enter ticket Seller Code</label></br>
+<input name="tf_events_ticket" class="tfticket" value="<?php echo $ticket; ?>" /></br>
+You can find the code by looking for 'xxx' in the pattern: <em>https://tickets.vanrecital.com/TheatreM</br>Manager/1/login&event=xxx</em>
+</p>
+<p>To remove the ticket button from this event simply remove all the content in this field.</p>
     <?php
 }
 
@@ -146,8 +164,6 @@ function wpt_events_location() {
 
 
 
-
-
 add_action ('save_post', 'save_tf_events');
 
 function save_tf_events(){
@@ -171,6 +187,10 @@ function save_tf_events(){
         $updatestartd = strtotime ( $_POST["tf_events_startdate"] . $_POST["tf_events_starttime"] );
         update_post_meta($post->ID, "tf_events_startdate", $updatestartd );
 
+    if(!isset($_POST["tf_events_ticket"])):
+        return $post;
+    endif;
+        update_post_meta($post->ID, "tf_events_ticket", $_POST["tf_events_ticket"] );
         
     if(!isset($_POST["tf_events_venue"])):
         return $post;
@@ -334,7 +354,7 @@ function create_package_taxonomy() {
         'hierarchical' => true,
         'show_ui' => true,
         'query_var' => true,
-        'rewrite' => array( 'slug' => 'season' ),
+        'rewrite' => array( 'slug' => 'package' ),
     ));
 
 }
