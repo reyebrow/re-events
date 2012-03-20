@@ -13,12 +13,8 @@ class Events_Widget extends WP_Widget {
 	function widget( $args, $instance ) {
 		extract( $args );
 		$title = apply_filters( 'widget_title', $instance['title'] );
-		echo $before_widget;
-		if ( $title )
-			echo $before_title . $title . $after_title; ?>
 
-
-      <?php $args = array( 
+        $args = array( 
           'post_type' => 'tf_events', 
           'posts_per_page' => 0,
           'meta_query' => array(
@@ -33,7 +29,12 @@ class Events_Widget extends WP_Widget {
         $loop = new WP_Query( $args ); ?>
 
          <?php if ( $loop->have_posts() ) {
-        ?><div class="row">
+         
+    		echo $before_widget;
+    		if ( $title )
+    			echo $before_title . $title . $after_title;
+         
+        ?><div id="events-list" class="row">
         <div class="twelve columns"><?php
           while ( $loop->have_posts() ) {
             
@@ -55,11 +56,12 @@ class Events_Widget extends WP_Widget {
           </div>
           </div>
           <?php
+        echo $after_widget;
+          
       }//if ?>
 
 
-		<?php echo $after_widget;
-	}
+		<?php }
 
 	/** @see WP_Widget::update */
 	function update( $new_instance, $old_instance ) {
