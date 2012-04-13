@@ -41,11 +41,11 @@ class Events_Widget extends WP_Widget {
             $post = $loop->post;
 
             ?>
-              <div class="row">
+              <div class="row event-row">
                 <div class="twelve columns">
+                  <h3 class="event-title"><a href="<?php print get_permalink( $post->ID );?>"><?php the_title(); ?></a></h3>
                   <?php $start_date = get_post_meta($post->ID, 'tf_events_startdate', true); ?>
                   <?php tf_events_date($start_date);?> | <?php tf_events_time($start_date);?> | <?php print get_post_meta($post->ID, 'tf_events_venue', true); ?>
-                  <h3 class="event-title"><a href="<?php print get_permalink( $post->ID );?>"><?php the_title(); ?></a></h3>
                 </div>
               </div>
               
