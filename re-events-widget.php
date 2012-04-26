@@ -33,7 +33,7 @@ class Events_Widget extends WP_Widget {
     		echo $before_widget;
     		if ( $title )
     			echo $before_title . $title . $after_title;
-         
+
         ?><div id="events-list" class="row">
         <div class="twelve columns"><?php
           while ( $loop->have_posts() ) {
@@ -41,12 +41,15 @@ class Events_Widget extends WP_Widget {
             $loop->the_post();  //set up $post variable
             $post = $loop->post;
 
+            $citylist = get_the_term_list( $post->ID, "re_bccla_city", "", ", " );
+            $citylist = is_wp_error($citylist) ? "" : $citylist;
+
             ?>
               <div class="row event-row">
                 <div class="twelve columns">
                   <h3 class="event-title"><a href="<?php print get_permalink( $post->ID );?>"><?php the_title(); ?></a></h3>
                   <?php $start_date = get_post_meta($post->ID, 'tf_events_startdate', true); ?>
-                  <?php tf_events_date($start_date);?> | <?php tf_events_time($start_date);?> | <?php print get_post_meta($post->ID, 'tf_events_venue', true); ?>
+                  <?php tf_events_date($start_date);?> | <?php tf_events_time($start_date);?> | <?php print $citylist; ?>
                 </div>
               </div>
               
