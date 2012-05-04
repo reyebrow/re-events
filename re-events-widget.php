@@ -17,6 +17,9 @@ class Events_Widget extends WP_Widget {
         $args = array( 
           'post_type' => 'tf_events', 
           'posts_per_page' => 0,
+          'order' => 'ASC',
+          'meta_key' => 'tf_events_startdate',
+          'orderby' => 'meta_value',
           'meta_query' => array(
             array(
               'key' => 'tf_events_startdate',
@@ -29,7 +32,7 @@ class Events_Widget extends WP_Widget {
         $loop = new WP_Query( $args ); ?>
 
          <?php if ( $loop->have_posts() ) {
-         
+         //print_r($loop);
     		echo $before_widget;
     		if ( $title )
     			echo $before_title . $title . $after_title;
