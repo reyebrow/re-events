@@ -140,7 +140,7 @@ function tf_events_meta () {
             <li><label>Start Time</label><input name="tf_events_starttime" class="tftime" value="<?php echo $clean_st; ?>" /><em>Use 12H format (7pm = 07:00pm)</em></li>
             <li><label>End Date</label><input name="tf_events_enddate" class="tfdate" value="<?php echo $clean_ed; ?>" /></li>
             <li><label>End Time</label><input name="tf_events_endtime" class="tftime" value="<?php echo $clean_et; ?>" /><em>Use 12H format (7pm = 07:00pm)</em></li>
-            <li>
+<!--             <li>
                 <label>Time Zone</label>
                 <select name="tf_events_tz" id="tf_events_tz">
                   <option value="-8.0" <?php print $meta_tz == "-8.0" ? $selected : "" ?>>(GMT -8:00) Pacific Time</option>
@@ -150,12 +150,13 @@ function tf_events_meta () {
                   <option value="-4.0" <?php print $meta_tz == "-4.0" ? $selected : "" ?>>(GMT -4:00) Atlantic Time</option>
                   <option value="-3.5" <?php print $meta_tz == "-3.5" ? $selected : "" ?>>(GMT -3:30) Newfoundland</option>
                 </select>
-            </li>
+            </li> -->
         </ul>
     </div>
     <div class="tf-meta location">
         <ul>
-            <li><label>Venue</label><input name="tf_events_venue" class="tfvenue" value="<?php echo $tfvenue; ?>" /></li>
+            <li><label>Venue</label><br>
+              <textarea name="tf_events_venue" rows="5" class="tfvenue widefat"/><?php echo $tfvenue; ?></textarea>
         </ul>
     </div>
     <?php
@@ -220,12 +221,6 @@ function save_tf_events(){
         $updateendd = strtotime ( $_POST["tf_events_enddate"] . $_POST["tf_events_endtime"]);
         update_post_meta($post->ID, "tf_events_enddate", $updateendd );
 
-
-    if(!isset($_POST["tf_events_tz"])):
-        return $post;
-    endif;
-        update_post_meta($post->ID, "tf_events_tz", $_POST["tf_events_tz"] );
-        
     if(!isset($_POST["tf_events_venue"])):
         return $post;
     endif;

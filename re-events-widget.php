@@ -37,29 +37,28 @@ class Events_Widget extends WP_Widget {
     		if ( $title )
     			echo $before_title . $title . $after_title;
 
-        ?><div id="events-list" class="row">
-        <div class="twelve columns"><?php
+        ?>
+        <div class=""><?php
           while ( $loop->have_posts() ) {
             
             $loop->the_post();  //set up $post variable
             $post = $loop->post;
-
-            $citylist = get_the_term_list( $post->ID, "re_bccla_city", "", ", " );
-            $citylist = is_wp_error($citylist) ? "" : $citylist;
-
+            $start_date = get_post_meta($post->ID, 'tf_events_startdate', true);
             ?>
-              <div class="row event-row">
+              <div class="row event-row collapse">
                 <div class="twelve columns">
-                  <h3 class="event-title"><a href="<?php print get_permalink( $post->ID );?>"><?php the_title(); ?></a></h3>
-                  <?php $start_date = get_post_meta($post->ID, 'tf_events_startdate', true); ?>
-                  <?php tf_events_date($start_date);?> | <?php tf_events_time($start_date);?> | <?php print $citylist; ?>
+                    
+                  <h3 class="event-date"><?php tf_events_date($start_date, "F, j"); ?></h3>
+                  <h3 class="event-title"><?php the_title(); ?></h3>
+                  <div class="time-date"><?php tf_events_time($start_date);?> <?php tf_events_date($start_date, "l F j, Y"); ?></div>
+                  <div class="venue"><?php print str_replace("\n", "</br>", get_post_meta($post->ID, 'tf_events_venue', true)); ?></div>
+                  <div class="event-body"><?php the_content(); ?></div>
                 </div>
               </div>
               
           <?php
           }//while
           ?>
-          </div>
           </div>
           <?php
         echo $after_widget;
