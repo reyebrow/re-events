@@ -23,7 +23,7 @@ class Events_Widget extends WP_Widget {
           'meta_query' => array(
             array(
               'key' => 'tf_events_startdate',
-              'value' => strtotime("now"),
+              'value' => strtotime("today 6am"),
               'compare' => '>='
               )
           )
