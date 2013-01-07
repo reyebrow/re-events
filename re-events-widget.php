@@ -16,7 +16,7 @@ class Events_Widget extends WP_Widget {
 
         $args = array( 
           'post_type' => 'tf_events', 
-          'posts_per_page' => 0,
+          'posts_per_page' => 5,
           'order' => 'ASC',
           'meta_key' => 'tf_events_startdate',
           'orderby' => 'meta_value',
@@ -35,7 +35,7 @@ class Events_Widget extends WP_Widget {
          //print_r($loop);
     		echo $before_widget;
     		if ( $title )
-    			echo $before_title . $title . $after_title;
+    			echo $before_title . "<a href='/upcoming-events/'>" . $title . "</a>" . $after_title;
 
         ?><div id="events-list" class="row">
         <div class="twelve columns"><?php
