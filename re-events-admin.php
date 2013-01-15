@@ -283,9 +283,10 @@ function events_scripts() {
     global $post_type;
     if( 'tf_events' != $post_type )
     return;
-    wp_enqueue_script( 'js-jquery-ui-datepicker', plugins_url('/js/jquery-ui-1.8.16.datepicker.min.js', __FILE__), 'jQuery' );
+    //wp_enqueue_script( 'js-jquery-ui-datepicker', plugins_url('/js/jquery-ui-1.8.16.datepicker.min.js', __FILE__), 'jQuery' );
     //wp_enqueue_script( 'js-jquery-ui-timepicker', plugins_url('/js/jquery.timePicker.min.js', __FILE__), 'jQuery' );
-    wp_enqueue_script( 're-events-init', plugins_url('/js/app.js', __FILE__), 'js-jquery-ui-datepicker');
+    wp_enqueue_script('jquery-ui-datepicker');
+    wp_enqueue_script( 're-events-init', plugins_url('/js/app.js', __FILE__), 'jquery-ui-datepicker');
 }
 
 add_action( 'admin_init', 'events_styles');
